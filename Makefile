@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude
-LDFLAGS = 
+CFLAGS = -Wall -Wextra -Iinclude 
+LDFLAGS = -lm
 SRC = src/value.c main.c
 OBJ = $(SRC:%.c=obj/%.o)
 TARGET = bin/gigagrad
