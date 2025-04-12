@@ -7,7 +7,7 @@ It is being developed to explore the **viability of implementing autograd** in C
 ## Roadmap
 
 - [x] Scalar Value type with gradient tracking
-- [ ] Support for basic ops: +, *, -, /, **, ReLU
+- [x] Support for basic ops: +, *, -, /, **, ReLU
 - [ ] Reverse-mode autodiff (backward pass)
 - [ ] Computation graph (DAG traversal)
 - [ ] Minimal test example (e.g., single neuron or MLP)
