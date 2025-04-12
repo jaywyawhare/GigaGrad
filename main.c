@@ -1,52 +1,43 @@
 #include "include/value.h"
+#include "include/engine.h"
 #include <stdio.h>
 
 int main()
 {
-    Value *a = value_create(4.0);
-    Value *b = value_create(2.0);
-    Value *c = value_create(-1.0);
+    Value *a = value_create(2.0);
+    Value *b = value_create(-3.0);
+    Value *c = value_create(10.0);
 
-    printf("Initial values:\n");
-    printf("a: ");
-    value_print(a);
-    printf("b: ");
-    value_print(b);
-    printf("c: ");
-    value_print(c);
+    Value *x = value_mul(a, b);
+    Value *y = value_add(x, c);
+    Value *z = value_pow(y, 2.0);
 
-    Value *sum = value_add(a, b);   
-    Value *diff = value_sub(a, b);  
-    Value *prod = value_mul(a, b);  
-    Value *quot = value_div(a, b);  
-    Value *pow = value_pow(a, 2.0); 
-    Value *relu_pos = value_relu(a);
-    Value *relu_neg = value_relu(c);
+    printf("\nForward Pass:\n");
+    printf("a = %.2f\n", a->data);
+    printf("b = %.2f\n", b->data);
+    printf("c = %.2f\n", c->data);
+    printf("x = a * b = %.2f\n", x->data);
+    printf("y = x + c = %.2f\n", y->data);
+    printf("z = y^2 = %.2f\n", z->data);
 
-    printf("\nOperations results:\n");
-    printf("a + b = ");
-    value_print(sum);
-    printf("a - b = ");
-    value_print(diff);
-    printf("a * b = ");
-    value_print(prod);
-    printf("a / b = ");
-    value_print(quot);
-    printf("a^2 = ");
-    value_print(pow);
-    printf("relu(a) = ");
-    value_print(relu_pos);
-    printf("relu(c) = ");
-    value_print(relu_neg);
+    printf("\nBefore Backpropagation:\n");
+    printf("Initial gradients:\n");
+    printf("a (grad): %.4f\n", a->grad);
+    printf("b (grad): %.4f\n", b->grad);
+    printf("c (grad): %.4f\n", c->grad);
 
-    value_free(sum);
-    value_free(diff);
-    value_free(prod);
-    value_free(quot);
-    value_free(pow);
-    value_free(relu_pos);
-    value_free(relu_neg);
+    value_backward(z);
 
+    printf("\nAfter Backpropagation:\n");
+    printf("Final gradients:\n");
+    printf("z = (a*b + c)^2, where a=%.1f, b=%.1f, c=%.1f\n", a->data, b->data, c->data);
+    printf("∂z/∂a = %.4f\n", a->grad);
+    printf("∂z/∂b = %.4f\n", b->grad);
+    printf("∂z/∂c = %.4f\n", c->grad);
+
+    value_free(z);
+    value_free(y);
+    value_free(x);
     value_free(c);
     value_free(b);
     value_free(a);
