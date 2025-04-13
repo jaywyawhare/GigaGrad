@@ -4,43 +4,47 @@
 
 int main()
 {
-    Value *a = value_create(2.0);
-    Value *b = value_create(-3.0);
-    Value *c = value_create(10.0);
+    Value *a = value_create(3.0);
+    Value *b = value_create(4.0);
+    Value *n3 = value_create(3.0);
 
-    Value *x = value_mul(a, b);
-    Value *y = value_add(x, c);
-    Value *z = value_pow(y, 2.0);
+    Value *c = value_add(a, b);
+    Value *d = value_mul(c, c);
+    Value *e = value_add(d, a);
+    Value *f = value_add(e, n3);
 
-    printf("\nForward Pass:\n");
-    printf("a = %.2f\n", a->data);
-    printf("b = %.2f\n", b->data);
-    printf("c = %.2f\n", c->data);
-    printf("x = a * b = %.2f\n", x->data);
-    printf("y = x + c = %.2f\n", y->data);
-    printf("z = y^2 = %.2f\n", z->data);
+    printf("Forward Pass Results:\n");
+    printf("a = %.4f\n", a->data);
+    printf("b = %.4f\n", b->data);
+    printf("c = (a + b) = %.4f\n", c->data);
+    printf("d = (c * c) = %.4f\n", d->data);
+    printf("e = (d + a) = %.4f\n", e->data);
+    printf("f = (e + 3) = %.4f\n", f->data);
 
-    printf("\nBefore Backpropagation:\n");
-    printf("Initial gradients:\n");
-    printf("a (grad): %.4f\n", a->grad);
-    printf("b (grad): %.4f\n", b->grad);
-    printf("c (grad): %.4f\n", c->grad);
+    value_backward(f);
 
-    value_backward(z);
+    printf("\nBackward Pass Results (Gradients):\n");
+    printf("∂f/∂a = %.4f\n", a->grad);
+    printf("∂f/∂b = %.4f\n", b->grad);
+    printf("∂f/∂c = %.4f\n", c->grad);
+    printf("∂f/∂d = %.4f\n", d->grad);
+    printf("∂f/∂e = %.4f\n", e->grad);
+    printf("∂f/∂f = %.4f\n", f->grad);
 
-    printf("\nAfter Backpropagation:\n");
-    printf("Final gradients:\n");
-    printf("z = (a*b + c)^2, where a=%.1f, b=%.1f, c=%.1f\n", a->data, b->data, c->data);
-    printf("∂z/∂a = %.4f\n", a->grad);
-    printf("∂z/∂b = %.4f\n", b->grad);
-    printf("∂z/∂c = %.4f\n", c->grad);
+    value_print_forward_graph(f, "forward_graph.dot");
+    value_print_backward_graph(f, "backward_graph.dot");
+    value_print_full_graph(f, "full_graph.dot");
 
-    value_free(z);
-    value_free(y);
-    value_free(x);
+    printf("\nTo visualize graphs, run:\n");
+    printf("dot -Tsvg output/filename.dot -o output/filename.svg\n");
+
+    value_free(f);
+    value_free(e);
+    value_free(d);
     value_free(c);
     value_free(b);
     value_free(a);
+    value_free(n3);
 
     return 0;
 }
