@@ -35,4 +35,8 @@ void value_backward(Value *v);
 
 void value_print(Value *v);
 
+const char *value_get_op_symbol(Value *v);
+void value_get_label(Value *v, char *buf, size_t size);
+void value_get_forward_label(Value *v, char *buf, size_t size);
+
 #endif

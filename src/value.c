@@ -199,3 +199,52 @@ Value *value_pow(Value *base, double exponent)
     out->backward_ctx = exp_ptr;
     return out;
 }
+
+const char *value_get_op_symbol(Value *v)
+{
+    if (!v->backward)
+        return "";
+    if (v->backward == backward_add)
+        return "+";
+    if (v->backward == backward_mul)
+        return "*";
+    if (v->backward == backward_sub)
+        return "-";
+    if (v->backward == backward_div)
+        return "/";
+    if (v->backward == backward_relu)
+        return "ReLU";
+    if (v->backward == backward_pow)
+        return "^";
+    return "?";
+}
+
+void value_get_label(Value *v, char *buf, size_t size)
+{
+    const char *op = value_get_op_symbol(v);
+    if (op[0])
+    {
+        snprintf(buf, size, "{%s | data %.4f | grad %.4f}",
+                 op, v->data, v->grad);
+    }
+    else
+    {
+        snprintf(buf, size, "{data %.4f | grad %.4f}",
+                 v->data, v->grad);
+    }
+}
+
+void value_get_forward_label(Value *v, char *buf, size_t size)
+{
+    const char *op = value_get_op_symbol(v);
+    if (op[0])
+    {
+        snprintf(buf, size, "{%s | data %.4f}",
+                 op, v->data);
+    }
+    else
+    {
+        snprintf(buf, size, "{data %.4f}",
+                 v->data);
+    }
+}
