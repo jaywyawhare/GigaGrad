@@ -9,7 +9,7 @@ It is being developed to explore the **viability of implementing autograd** in C
 - [x] Scalar Value type with gradient tracking
 - [x] Support for basic ops: +, *, -, /, **, ReLU
 - [x] Reverse-mode autodiff (backward pass)
-- [ ] Computation graph (DAG traversal)
+- [x] Computation graph (DAG traversal)
 - [ ] Minimal test example (e.g., single neuron or MLP)
 
 ## Installation
@@ -22,14 +22,21 @@ To install and build GigaGrad locally:
 git clone git@github.com:jaywyawhare/GigaGrad.git
 ```
 
-### 2. Build the Project
+### 2. Install Dependencies
+GigaGrad requires a C compiler and `make` to build. `graphviz` is optional for visualizing the computation graph.
+
+```bash
+sudo apt-get install build-essential graphviz make gcc
+```
+
+### 3. Build the Project
 
 ```bash
 cd GigaGrad
 make
 ```
 
-### 3. Run the Example
+### 4. Run the Example
 
 ```bash
 ./bin/gigagrad
