@@ -38,6 +38,12 @@ void backward_relu(Value *self)
     self->prev[0]->grad += (self->prev[0]->data > 0 ? self->grad : 0);
 }
 
+void backward_tanh(Value *self)
+{
+    double t = tanh(self->prev[0]->data);
+    self->prev[0]->grad += (1 - t * t) * self->grad;
+}
+
 Value *value_create(double data)
 {
     Value *v = malloc(sizeof(Value));
@@ -172,6 +178,25 @@ Value *value_relu(Value *x)
     return out;
 }
 
+Value *value_tanh(Value *x)
+{
+    Value *out = value_create(tanh(x->data));
+    if (!out)
+        return NULL;
+
+    out->prev = malloc(sizeof(Value *));
+    if (!out->prev)
+    {
+        value_free(out);
+        return NULL;
+    }
+
+    out->prev[0] = x;
+    out->prev_count = 1;
+    out->backward = backward_tanh;
+    return out;
+}
+
 Value *value_pow(Value *base, double exponent)
 {
     Value *out = value_create(pow(base->data, exponent));
@@ -216,6 +241,8 @@ const char *value_get_op_symbol(Value *v)
         return "ReLU";
     if (v->backward == backward_pow)
         return "^";
+    if (v->backward == backward_tanh)
+        return "tanh";
     return "?";
 }
 

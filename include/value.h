@@ -29,6 +29,7 @@ Value *value_mul(Value *a, Value *b);
 Value *value_div(Value *a, Value *b);
 Value *value_relu(Value *x);
 Value *value_pow(Value *base, double exponent);
+Value *value_tanh(Value *x);
 
 void value_zero_grad(Value *v);
 void value_backward(Value *v);
