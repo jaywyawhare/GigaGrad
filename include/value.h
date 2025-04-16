@@ -31,6 +31,7 @@ Value *value_relu(Value *x);
 Value *value_pow(Value *base, double exponent);
 Value *value_tanh(Value *x);
 
+Value **value_softmax(Value **inputs, int n);
 void value_zero_grad(Value *v);
 void value_backward(Value *v);
 

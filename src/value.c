@@ -23,6 +23,11 @@ void backward_mul(Value *self)
 
 void backward_div(Value *self)
 {
+    if (self->prev[1]->data == 0)
+    {
+        fprintf(stderr, "[ERROR] Division by zero in backward_div\n");
+        return;
+    }
     self->prev[0]->grad += self->grad / self->prev[1]->data;
     self->prev[1]->grad -= (self->grad * self->prev[0]->data) / (self->prev[1]->data * self->prev[1]->data);
 }
@@ -44,6 +49,18 @@ void backward_tanh(Value *self)
     self->prev[0]->grad += (1 - t * t) * self->grad;
 }
 
+void backward_softmax(Value *self)
+{
+    int n = self->prev_count;
+    double softmax_i = self->data;
+
+    for (int i = 0; i < n; i++)
+    {
+        double indicator = (self->prev[i] == self->prev[0]) ? 1.0 : 0.0;
+        self->prev[i]->grad += softmax_i * (indicator - self->prev[i]->data) * self->grad;
+    }
+}
+
 Value *value_create(double data)
 {
     Value *v = malloc(sizeof(Value));
@@ -63,6 +80,9 @@ void value_free(Value *v)
 {
     if (!v)
         return;
+
+    v->visited = 0;
+
     if (v->prev)
     {
         free(v->prev);
@@ -223,6 +243,73 @@ Value *value_pow(Value *base, double exponent)
     out->backward = backward_pow;
     out->backward_ctx = exp_ptr;
     return out;
+}
+
+Value **value_softmax(Value **inputs, int n)
+{
+    double max_val = inputs[0]->data;
+    for (int i = 1; i < n; i++)
+    {
+        if (inputs[i]->data > max_val)
+        {
+            max_val = inputs[i]->data;
+        }
+    }
+
+    double sum = 0.0;
+    double *exp_values = malloc(n * sizeof(double));
+    if (!exp_values)
+        return NULL;
+
+    for (int i = 0; i < n; i++)
+    {
+        exp_values[i] = exp(inputs[i]->data - max_val);
+        sum += exp_values[i];
+    }
+
+    Value **outputs = malloc(n * sizeof(Value *));
+    if (!outputs)
+    {
+        free(exp_values);
+        return NULL;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        outputs[i] = value_create(exp_values[i] / sum);
+        if (!outputs[i])
+        {
+            for (int j = 0; j < i; j++)
+                value_free(outputs[j]);
+            free(outputs);
+            free(exp_values);
+            return NULL;
+        }
+
+        outputs[i]->prev = malloc(n * sizeof(Value *));
+        if (!outputs[i]->prev)
+        {
+            for (int j = 0; j <= i; j++)
+            {
+                if (outputs[j]->prev)
+                    free(outputs[j]->prev);
+                value_free(outputs[j]);
+            }
+            free(outputs);
+            free(exp_values);
+            return NULL;
+        }
+
+        for (int j = 0; j < n; j++)
+        {
+            outputs[i]->prev[j] = inputs[j];
+        }
+        outputs[i]->prev_count = n;
+        outputs[i]->backward = backward_softmax;
+    }
+
+    free(exp_values);
+    return outputs;
 }
 
 const char *value_get_op_symbol(Value *v)
