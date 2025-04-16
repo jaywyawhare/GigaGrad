@@ -1,0 +1,50 @@
+digraph G {
+    rankdir=LR;
+    bgcolor="#ffffff";
+    title="Complete Computation Graph";
+    node [shape=record, style=filled, fillcolor="#f8e8e8", fontsize=10];
+    edge [color="#2c3e50"];
+
+    compound=true;
+    splines=ortho;
+    nodesep=0.5;
+    ranksep=0.7;
+
+    subgraph cluster_forward {
+        style=filled;
+        fillcolor="#f8e8e8";
+        color="#2c3e50";
+        label="Computation Graph";
+        fontsize=12;
+        n0x63e5ab89e2a0 [label="{data 3.0000 | grad 15.0000}"];
+        n0x63e5ab89e2e0 [label="{data 4.0000 | grad 14.0000}"];
+        n0x63e5ab89e360 [label="{+ | data 7.0000 | grad 14.0000}"];
+        n0x63e5ab89e3c0 [label="{* | data 49.0000 | grad 1.0000}"];
+        n0x63e5ab89e420 [label="{+ | data 52.0000 | grad 1.0000}"];
+        n0x63e5ab89e320 [label="{data 3.0000 | grad 1.0000}"];
+        n0x63e5ab89e480 [label="{+ | data 55.0000 | grad 1.0000}"];
+    }
+
+
+    // Forward edges
+    edge [color="#2c3e50", style=solid];
+    n0x63e5ab89e2a0 -> n0x63e5ab89e360;
+    n0x63e5ab89e2e0 -> n0x63e5ab89e360;
+    n0x63e5ab89e360 -> n0x63e5ab89e3c0;
+    n0x63e5ab89e360 -> n0x63e5ab89e3c0;
+    n0x63e5ab89e3c0 -> n0x63e5ab89e420;
+    n0x63e5ab89e2a0 -> n0x63e5ab89e420;
+    n0x63e5ab89e420 -> n0x63e5ab89e480;
+    n0x63e5ab89e320 -> n0x63e5ab89e480;
+
+    // Backward edges
+    edge [color="#e74c3c", style=dashed];
+    n0x63e5ab89e360 -> n0x63e5ab89e2a0 [color="#e74c3c", style=dashed];
+    n0x63e5ab89e360 -> n0x63e5ab89e2e0 [color="#e74c3c", style=dashed];
+    n0x63e5ab89e3c0 -> n0x63e5ab89e360 [color="#e74c3c", style=dashed];
+    n0x63e5ab89e3c0 -> n0x63e5ab89e360 [color="#e74c3c", style=dashed];
+    n0x63e5ab89e420 -> n0x63e5ab89e3c0 [color="#e74c3c", style=dashed];
+    n0x63e5ab89e420 -> n0x63e5ab89e2a0 [color="#e74c3c", style=dashed];
+    n0x63e5ab89e480 -> n0x63e5ab89e420 [color="#e74c3c", style=dashed];
+    n0x63e5ab89e480 -> n0x63e5ab89e320 [color="#e74c3c", style=dashed];
+}
