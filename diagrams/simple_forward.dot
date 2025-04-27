@@ -1,0 +1,41 @@
+digraph simple_forward {
+    rankdir=LR;
+    bgcolor="#ffffff";
+    
+    // Node styling
+    node [shape=circle, style=filled, color="#2c3e50", fillcolor=white];
+    edge [color="#2c3e50", penwidth=1.5];
+
+    // Input layer
+    subgraph cluster_input {
+        label="Input Layer";
+        style=filled;
+        color="#95a5a6";
+        fillcolor="#f8f9fa";
+        x1 [label="x₁"];
+        x2 [label="x₂"];
+    }
+
+    // Hidden computation
+    subgraph cluster_hidden {
+        label="Computation";
+        style=filled;
+        color="#95a5a6";
+        fillcolor="#f8f9fa";
+        z [label="z"];
+        a [label="a"];
+    }
+
+    // Bias node
+    b [label="b"];
+
+    // Forward connections
+    x1 -> z [label="w₁"];
+    x2 -> z [label="w₂"];
+    b -> z [label="1"];
+    z -> a [label="σ(z)"];
+
+    // Add a label
+    label = "Forward Pass: z = w₁x₁ + w₂x₂ + b\na = σ(z)";
+    labelloc = "b";
+}

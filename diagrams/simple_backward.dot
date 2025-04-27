@@ -1,0 +1,41 @@
+digraph simple_backward {
+    rankdir=RL;
+    bgcolor="#ffffff";
+    
+    // Node styling
+    node [shape=circle, style=filled, color="#2c3e50", fillcolor=white];
+    edge [color="#e74c3c", style=dashed, penwidth=1.2];
+
+    // Gradients
+    subgraph cluster_grads {
+        label="Gradient Flow";
+        style=filled;
+        color="#95a5a6";
+        fillcolor="#f8f9fa";
+        dl [label="∂L/∂a"];
+        dz [label="∂L/∂z"];
+    }
+
+    // Input layer gradients
+    subgraph cluster_input {
+        label="Parameter Gradients";
+        style=filled;
+        color="#95a5a6";
+        fillcolor="#f8f9fa";
+        dw1 [label="∂L/∂w₁"];
+        dw2 [label="∂L/∂w₂"];
+    }
+
+    // Bias gradient
+    db [label="∂L/∂b"];
+
+    // Backward connections
+    dl -> dz [label="σ'(z)"];
+    dz -> dw1 [label="x₁"];
+    dz -> dw2 [label="x₂"];
+    dz -> db [label="1"];
+
+    // Add a label
+    label = "Backward Pass: Chain Rule Application\n∂L/∂w = ∂L/∂a · ∂a/∂z · ∂z/∂w";
+    labelloc = "b";
+}
